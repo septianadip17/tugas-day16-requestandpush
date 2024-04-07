@@ -5,6 +5,7 @@ import FormPage from '../pages/form.jsx';
 import CatalogPage from '../pages/catalog.jsx';
 import ProductPage from '../pages/product.jsx';
 import SettingsPage from '../pages/settings.jsx';
+import NotifPage from '../pages/notif.jsx';
 
 import DynamicRoutePage from '../pages/dynamic-route.jsx';
 import RequestAndLoad from '../pages/request-and-load.jsx';
@@ -26,6 +27,10 @@ var routes = [
   {
     path: '/catalog/',
     component: CatalogPage,
+  },
+  {
+    path: '/notif/',
+    component: NotifPage,
   },
   {
     path: '/product/:id/',

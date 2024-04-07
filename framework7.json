@@ -2,31 +2,26 @@
   "cwd": "E:\\iay ngoding\\2024\\Maxy Academy\\Tugas\\Day 16",
   "type": [
     "web",
-    "cordova"
+    "capacitor",
+    "pwa"
   ],
   "name": "Day 16",
-  "pkg": "io.day16.app",
   "framework": "react",
   "template": "tabs",
-  "cssPreProcessor": false,
   "bundler": "vite",
-  "cordova": {
-    "folder": "cordova",
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "plugins": [
-      "cordova-plugin-statusbar",
-      "cordova-plugin-keyboard",
-      "cordova-plugin-splashscreen"
-    ]
-  },
+  "cssPreProcessor": false,
   "theming": {
     "customColor": false,
     "color": "#007aff",
     "darkMode": false,
     "iconFonts": true
   },
-  "customBuild": false
+  "customBuild": false,
+  "pkg": "io.framework7.myapp",
+  "capacitor": {
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  }
 }

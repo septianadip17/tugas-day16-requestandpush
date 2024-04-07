@@ -9,33 +9,28 @@ Framework7 app created with following options:
   "cwd": "E:\\iay ngoding\\2024\\Maxy Academy\\Tugas\\Day 16",
   "type": [
     "web",
-    "cordova"
+    "capacitor",
+    "pwa"
   ],
   "name": "Day 16",
-  "pkg": "io.day16.app",
   "framework": "react",
   "template": "tabs",
-  "cssPreProcessor": false,
   "bundler": "vite",
-  "cordova": {
-    "folder": "cordova",
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "plugins": [
-      "cordova-plugin-statusbar",
-      "cordova-plugin-keyboard",
-      "cordova-plugin-splashscreen"
-    ]
-  },
+  "cssPreProcessor": false,
   "theming": {
     "customColor": false,
     "color": "#007aff",
     "darkMode": false,
     "iconFonts": true
   },
-  "customBuild": false
+  "customBuild": false,
+  "pkg": "io.framework7.myapp",
+  "capacitor": {
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  }
 }
 ```
 
@@ -51,20 +46,25 @@ npm install
 * 🔥 `start` - run development server
 * 🔧 `dev` - run development server
 * 🔧 `build` - build web app for production
-* 📱 `build-cordova` - build cordova app
-* 📱 `build-cordova-ios` - build cordova iOS app
-* 📱 `cordova-ios` - run dev build cordova iOS app
-* 📱 `build-cordova-android` - build cordova Android app
-* 📱 `cordova-android` - run dev build cordova Android app
+* 📱 `build-capacitor-ios` - build app and copy it to iOS capacitor project
+* 📱 `build-capacitor-android` - build app and copy it to Android capacitor project
 
 ## Vite
 
 There is a [Vite](https://vitejs.dev) bundler setup. It compiles and bundles all "front-end" resources. You should work only with files located in `/src` folder. Vite config located in `vite.config.js`.
-## Cordova
 
-Cordova project located in `cordova` folder. You shouldn't modify content of `cordova/www` folder. Its content will be correctly generated when you call `npm run cordova-build-prod`.
+## PWA
 
+This is a PWA. Don't forget to check what is inside of your `service-worker.js`. It is also recommended that you disable service worker (or enable "Update on reload") in browser dev tools during development.
+## Capacitor
 
+This project created with Capacitor support. And first thing required before start is to add capacitor platforms, run in terminal:
+
+```
+npx cap add ios && npx cap add android
+```
+
+Check out [official Capacitor documentation](https://capacitorjs.com) for more examples and usage examples.
 
 ## Assets
 
@@ -80,7 +80,14 @@ Or launch UI where you will be able to change icons and splash screens:
 framework7 assets --ui
 ```
 
+## Capacitor Assets
 
+Capacitor assets are located in `resources` folder which is intended to be used with `cordova-res` tool. To generate  mobile apps assets run in terminal:
+```
+npx cordova-res
+```
+
+Check out [official cordova-res documentation](https://github.com/ionic-team/cordova-res) for more usage examples.
 
 ## Documentation & Resources
 

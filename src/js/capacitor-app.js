@@ -1,13 +1,15 @@
-var cordovaApp = {
+var capacitorApp = {
   f7: null,
   /*
   This method hides splashscreen after 2 seconds
   */
   handleSplashscreen: function () {
-    var f7 = cordovaApp.f7;
-    if (!window.navigator.splashscreen) return;
+    var f7 = capacitorApp.f7;
+    if (!window.Capacitor) return;
     setTimeout(() => {
-      window.navigator.splashscreen.hide();
+      if (window.Capacitor.Plugins && window.Capacitor.Plugins.SplashScreen) {
+        window.Capacitor.Plugins.SplashScreen.hide();
+      }
     }, 2000);
   },
   /*
@@ -16,74 +18,63 @@ var cordovaApp = {
   In case there is a current view with navigation history, it will go back instead.
   */
   handleAndroidBackButton: function () {
-    var f7 = cordovaApp.f7;
+    var f7 = capacitorApp.f7;
     const $ = f7.$;
-
-    document.addEventListener(
-      'backbutton',
-      function (e) {
+    if (!window.Capacitor || !window.Capacitor.Plugins.App) return;
+    window.Capacitor.Plugins.App.addListener(
+      'backButton',
+      function () {
         if ($('.actions-modal.modal-in').length) {
           f7.actions.close('.actions-modal.modal-in');
-          e.preventDefault();
-          return false;
+          return;
         }
         if ($('.dialog.modal-in').length) {
           f7.dialog.close('.dialog.modal-in');
-          e.preventDefault();
-          return false;
+          return;
         }
         if ($('.sheet-modal.modal-in').length) {
           f7.sheet.close('.sheet-modal.modal-in');
-          e.preventDefault();
-          return false;
+          return;
         }
         if ($('.popover.modal-in').length) {
           f7.popover.close('.popover.modal-in');
-          e.preventDefault();
-          return false;
+          return;
         }
         if ($('.popup.modal-in').length) {
           if ($('.popup.modal-in>.view').length) {
             const currentView = f7.views.get('.popup.modal-in>.view');
             if (currentView && currentView.router && currentView.router.history.length > 1) {
               currentView.router.back();
-              e.preventDefault();
-              return false;
+              return;
             }
           }
           f7.popup.close('.popup.modal-in');
-          e.preventDefault();
-          return false;
+          return;
         }
         if ($('.login-screen.modal-in').length) {
           f7.loginScreen.close('.login-screen.modal-in');
-          e.preventDefault();
-          return false;
+          return;
         }
 
         if ($('.page-current .searchbar-enabled').length) {
           f7.searchbar.disable('.page-current .searchbar-enabled');
-          e.preventDefault();
-          return false;
+          return;
         }
 
         if ($('.page-current .card-expandable.card-opened').length) {
           f7.card.close('.page-current .card-expandable.card-opened');
-          e.preventDefault();
-          return false;
+          return;
         }
 
         const currentView = f7.views.current;
         if (currentView && currentView.router && currentView.router.history.length > 1) {
           currentView.router.back();
-          e.preventDefault();
-          return false;
+          return;
         }
 
         if ($('.panel.panel-in').length) {
           f7.panel.close('.panel.panel-in');
-          e.preventDefault();
-          return false;
+          return;
         }
       },
       false,
@@ -95,12 +86,14 @@ var cordovaApp = {
     - hides keyboard accessory bar for all inputs except where it required
   */
   handleKeyboard: function () {
-    var f7 = cordovaApp.f7;
-    if (!window.Keyboard || !window.Keyboard.shrinkView) return;
+    var f7 = capacitorApp.f7;
+    if (!window.Capacitor || !window.Capacitor.Plugins.Keyboard) return;
     var $ = f7.$;
-    window.Keyboard.shrinkView(false);
-    window.Keyboard.disableScrollingInShrinkView(true);
-    window.Keyboard.hideFormAccessoryBar(true);
+    var Keyboard = window.Capacitor.Plugins.Keyboard;
+    if (!Keyboard) return;
+    Keyboard.setResizeMode({ mode: 'native' });
+    Keyboard.setScroll({ isDisabled: true });
+    Keyboard.setAccessoryBarVisible({ isVisible: false });
     window.addEventListener('keyboardWillShow', () => {
       f7.input.scrollIntoView(document.activeElement, 0, true, true);
     });
@@ -111,20 +104,9 @@ var cordovaApp = {
       if (document.activeElement && $(document.activeElement).parents('.messagebar').length) {
         return;
       }
-      window.Keyboard.hideFormAccessoryBar(false);
+      Keyboard.setAccessoryBarVisible({ isVisible: true });
     });
-    window.addEventListener('keyboardHeightWillChange', (event) => {
-      var keyboardHeight = event.keyboardHeight;
-      if (keyboardHeight > 0) {
-        // Keyboard is going to be opened
-        document.body.style.height = `calc(100% - ${keyboardHeight}px)`;
-        $('html').addClass('device-with-keyboard');
-      } else {
-        // Keyboard is going to be closed
-        document.body.style.height = '';
-        $('html').removeClass('device-with-keyboard');
-      }
-    });
+
     $(document).on(
       'touchstart',
       'input, textarea, select',
@@ -133,9 +115,9 @@ var cordovaApp = {
         var type = e.target.type;
         var showForTypes = ['datetime-local', 'time', 'date', 'datetime'];
         if (nodeName === 'select' || showForTypes.indexOf(type) >= 0) {
-          window.Keyboard.hideFormAccessoryBar(false);
+          Keyboard.setAccessoryBarVisible({ isVisible: true });
         } else {
-          window.Keyboard.hideFormAccessoryBar(true);
+          Keyboard.setAccessoryBarVisible({ isVisible: false });
         }
       },
       true,
@@ -143,19 +125,17 @@ var cordovaApp = {
   },
   init: function (f7) {
     // Save f7 instance
-    cordovaApp.f7 = f7;
+    capacitorApp.f7 = f7;
 
-    document.addEventListener('deviceready', () => {
-      // Handle Android back button
-      cordovaApp.handleAndroidBackButton();
+    // Handle Android back button
+    capacitorApp.handleAndroidBackButton();
 
-      // Handle Splash Screen
-      cordovaApp.handleSplashscreen();
+    // Handle Splash Screen
+    capacitorApp.handleSplashscreen();
 
-      // Handle Keyboard
-      cordovaApp.handleKeyboard();
-    });
+    // Handle Keyboard
+    capacitorApp.handleKeyboard();
   },
 };
 
-export default cordovaApp;
+export default capacitorApp;
